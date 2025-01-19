@@ -70,8 +70,8 @@ export class CdkWorksStack extends cdk.Stack {
     // Aurora MySQL クラスターの作成
     this.auroraCluster = new rds.DatabaseCluster(this, 'AuroraCluster', {
       engine: rds.DatabaseClusterEngine.auroraMysql({
-        version: rds.AuroraMysqlEngineVersion.VER_2_11_2,
-		//version: rds.AuroraMysqlEngineVersion.of('8.0.mysql_aurora.3.04.2', '3.04.2'),
+        //version: rds.AuroraMysqlEngineVersion.VER_2_11_2,
+        version: rds.AuroraMysqlEngineVersion.of('8.0.mysql_aurora.3.08.0', '3.08.0'),
       }),
       instanceProps: {
         vpc: this.vpc,
@@ -85,13 +85,12 @@ export class CdkWorksStack extends cdk.Stack {
         securityGroups: [dbSecurityGroup],
       },
       instances: 1,
-	  //parameterGroup: rds.ParameterGroup.fromParameterGroupName(
-      //  this,
-      //  'ImportedParameterGroup',
-      //  auroraClusterParameterGroupV3.ref
-      //),
-	  //parameterGroup: auroraClusterParameterGroupV3,
-	  parameterGroup: auroraClusterParameterGroupV2,
+      parameterGroup: rds.ParameterGroup.fromParameterGroupName(
+        this,
+        'ImportedParameterGroup',
+        auroraClusterParameterGroupV3.ref
+      ),
+      //parameterGroup: auroraClusterParameterGroupV2,
       credentials: rds.Credentials.fromGeneratedSecret('admin'),
       port: 3306,
       backup: {
